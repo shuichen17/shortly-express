@@ -5,6 +5,7 @@ const partials = require('express-partials');
 const bodyParser = require('body-parser');
 const Auth = require('./middleware/auth');
 const models = require('./models');
+const Model = require('./models/model.js');
 
 const app = express();
 
@@ -94,26 +95,35 @@ app.post('/signup', (req, res) => {
     });
 }); 
 
-app.post('/login', (req, res, next) => {
+app.post('/login', (req, res) => {
   var username = req.body.username;
   var options = {
     username: username
   };
 
-  return models.Model.get(options)
-    .then(result => {
-      console.log(result);
-    })
-  // set up options obj
-    // username: username
-  // call model.Model.get(options)
-    // if username exists then
-      // compare query with models.Users.compare
-      // if true then res.redirect('/') and status(200).end('login successful')
-      // else res.redirect('/login') and status(500).end('Login not successful')
+  var newUsers = new Model('users');
   
-  return models.Users.compare(attempted, password, salt)
-  // hashUtils.compareHash or models.Users.compare
+  return newUsers.get(options)
+    .then(result => {
+      return models.Users.compare(req.body.password, result.password, result.salt);
+    })
+    // .then(result => {
+    //   models.Sessions.create();
+    //   return result;
+    //   // or use middleware auth.js => Auth.createSession
+    // })
+    // .then(result => {
+    //   res.redirect('/');
+    //   res.status(201).end('Login successful');
+    // })
+    .error(error => {
+      res.redirect('/login');
+      res.status(500).end('Login not successful');
+    })
+    .catch(result => {
+      res.redirect('/');
+      res.status(201).end('Login successful');
+    })
 });
 
 /************************************************************/
