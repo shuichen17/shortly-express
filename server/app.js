@@ -92,26 +92,29 @@ app.post('/signup', (req, res) => {
       res.redirect('/');
       res.status(201).end('Sign up successful');
     });
-});
-
-
-
+}); 
 
 app.post('/login', (req, res, next) => {
   var username = req.body.username;
-  var password = req.body.password;
-  return 
+  var options = {
+    username: username
+  };
 
-  // if ()
-  // if user 
-  // if(username)
-
+  return models.Model.get(options)
+    .then(result => {
+      console.log(result);
+    })
+  // set up options obj
+    // username: username
+  // call model.Model.get(options)
+    // if username exists then
+      // compare query with models.Users.compare
+      // if true then res.redirect('/') and status(200).end('login successful')
+      // else res.redirect('/login') and status(500).end('Login not successful')
+  
+  return models.Users.compare(attempted, password, salt)
   // hashUtils.compareHash or models.Users.compare
 });
-
-
-
-// Add routes to your Express server to process incoming POST requests. These routes should enable a user to register for a new account and for users to log in to your application
 
 /************************************************************/
 // Write your authentication routes here
