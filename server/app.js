@@ -74,6 +74,45 @@ app.post('/links',
     });
 });
 
+app.post('/signup', (req, res) => {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  return models.Users.create({ username, password})
+    .then(result => {
+      models.Sessions.create();
+      throw result;
+      // or use middleware auth.js => Auth.createSession
+    })
+    .error(error => {
+      res.redirect('/signup');
+      res.status(500).end('Not able to create user profile: ', error);
+    })
+    .catch(result => {
+      res.redirect('/');
+      res.status(201).end('Sign up successful');
+    });
+});
+
+
+
+
+app.post('/login', (req, res, next) => {
+  var username = req.body.username;
+  var password = req.body.password;
+  return 
+
+  // if ()
+  // if user 
+  // if(username)
+
+  // hashUtils.compareHash or models.Users.compare
+});
+
+
+
+// Add routes to your Express server to process incoming POST requests. These routes should enable a user to register for a new account and for users to log in to your application
+
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
